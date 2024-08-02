@@ -8,10 +8,13 @@ const ReplyForm = ({ commentId, onReplyAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post("http://localhost:4000/comments/reply", {
-      commentId,
-      text,
-    });
+    const response = await axios.post(
+      "https://youtube-api-be.onrender.com/comments/reply",
+      {
+        commentId,
+        text,
+      }
+    );
     setText("");
     onReplyAdded(response.data); // Pass the new reply data
   };

@@ -5,7 +5,7 @@ import Logo from "./Logo";
 
 function Login() {
   const handleLogin = () => {
-    window.location.href = "http://localhost:4000/auth/google";
+    window.location.href = "https://youtube-api-be.onrender.com/auth/google";
   };
 
   return (

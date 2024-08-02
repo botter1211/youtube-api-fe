@@ -33,7 +33,9 @@ const Home = () => {
 
   useEffect(() => {
     const fetchActivities = async () => {
-      const response = await axios.get("http://localhost:4000/activities");
+      const response = await axios.get(
+        "https://youtube-api-be.onrender.com/activities"
+      );
       setActivities(response.data.items);
 
       // Fetch comments for each activity
@@ -43,7 +45,7 @@ const Home = () => {
         if (upload) {
           const videoId = upload.videoId;
           const commentsResponse = await axios.get(
-            `http://localhost:4000/comments?videoId=${videoId}`
+            `https://youtube-api-be.onrender.com/comments?videoId=${videoId}`
           );
           commentsData[videoId] = commentsResponse.data.items;
         }
@@ -57,7 +59,7 @@ const Home = () => {
 
   const handleCommentAdded = async (videoId) => {
     const commentsResponse = await axios.get(
-      `http://localhost:4000/comments?videoId=${videoId}`
+      `https://youtube-api-be.onrender.com/comments?videoId=${videoId}`
     );
     setComments((prevComments) => ({
       ...prevComments,
@@ -82,7 +84,9 @@ const Home = () => {
   //   }));
   // };
   const handleDeleteComment = async (commentId, videoId) => {
-    await axios.delete(`http://localhost:4000/comments/${commentId}`);
+    await axios.delete(
+      `https://youtube-api-be.onrender.com/comments/${commentId}`
+    );
     handleCommentAdded(videoId);
   };
 
@@ -118,23 +122,26 @@ const Home = () => {
           </div>
         ) : (
           <div>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                pt: 2,
-                alignItems: "center",
-              }}
-            >
-              <Toolbar sx={{ justifyContent: "flex-end", mr: "20px" }}>
-                <ToggleColorMode
-                  mode={mode}
-                  toggleColorMode={toggleColorMode}
-                />
-              </Toolbar>
-              <Button variant="contained" onClick={handleLogout}>
-                Logout
-              </Button>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <h2>Youtube API</h2>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  pt: 2,
+                  alignItems: "center",
+                }}
+              >
+                <Toolbar sx={{ justifyContent: "flex-end", mr: "20px" }}>
+                  <ToggleColorMode
+                    mode={mode}
+                    toggleColorMode={toggleColorMode}
+                  />
+                </Toolbar>
+                <Button variant="contained" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </Box>
             </Box>
             <h1>Activities</h1>
           </div>
@@ -307,86 +314,6 @@ const Home = () => {
                   )}
                 </CardContent>
               </Card>
-              {/* <li key={activity.id}>
-                <h2>{activity.snippet.title}</h2>
-                <p>Published At {fDate(activity.snippet.publishedAt)}</p>
-
-                {activity.contentDetails.upload && (
-                  <>
-                    <CommentForm
-                      videoId={activity.contentDetails.upload.videoId}
-                      onCommentAdded={() =>
-                        handleCommentAdded(
-                          activity.contentDetails.upload.videoId
-                        )
-                      }
-                    />
-                    <ul>
-                      {comments[activity.contentDetails.upload.videoId]?.map(
-                        (comment) => (
-                          <li key={comment.id}>
-                            <p>
-                              <strong>
-                                {
-                                  comment.snippet.topLevelComment.snippet
-                                    .authorDisplayName
-                                }
-                                :
-                              </strong>{" "}
-                              {
-                                comment.snippet.topLevelComment.snippet
-                                  .textOriginal
-                              }
-                            </p>
-                            <button
-                              onClick={() =>
-                                handleDeleteComment(
-                                  comment.id,
-                                  activity.contentDetails.upload.videoId
-                                )
-                              }
-                            >
-                              Delete
-                            </button>
-                            <ReplyForm
-                              commentId={comment.id}
-                              onReplyAdded={() =>
-                                handleCommentAdded(
-                                  activity.contentDetails.upload.videoId
-                                )
-                              }
-                            />
-                            {comment.replies && (
-                              <ul>
-                                {comment.replies.comments.map((reply) => (
-                                  <li key={reply.id}>
-                                    <p>
-                                      <strong>
-                                        {reply.snippet.authorDisplayName}:
-                                      </strong>{" "}
-                                      {reply.snippet.textOriginal}
-                                    </p>
-                                    <button
-                                      onClick={() =>
-                                        handleDeleteComment(
-                                          reply.id,
-                                          activity.contentDetails.upload.videoId
-                                        )
-                                      }
-                                    >
-                                      Delete
-                                    </button>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </>
-                )}
-              </li> */}
             </>
           ))}
         </ul>
@@ -396,183 +323,3 @@ const Home = () => {
 };
 
 export default Home;
-
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-
-// import CommentForm from "./CommentForm";
-// import ReplyForm from "./ReplyForm";
-// import { useNavigate } from "react-router-dom";
-// import { fDate } from "../utils/formatTime";
-
-// const Home = () => {
-//   const [activities, setActivities] = useState([]);
-//   const [comments, setComments] = useState({});
-//   const navigate = useNavigate();
-//   const handleLogout = () => {
-//     // Clear user session (e.g., remove tokens from localStorage)
-//     localStorage.removeItem("userToken");
-//     // Redirect to login page
-//     navigate("/login");
-//   };
-
-//   useEffect(() => {
-//     const fetchActivities = async () => {
-//       const token = localStorage.getItem("userToken");
-//       const response = await axios.get("http://localhost:5000/activities", {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-//       setActivities(response.data.items);
-
-//       // Fetch comments for each activity
-//       const commentsData = {};
-//       for (const activity of response.data.items) {
-//         const upload = activity.contentDetails.upload;
-//         if (upload) {
-//           const videoId = upload.videoId;
-//           const commentsResponse = await axios.get(
-//             `http://localhost:5000/comments?videoId=${videoId}`,
-//             {
-//               headers: {
-//                 Authorization: `Bearer ${token}`,
-//               },
-//             }
-//           );
-//           commentsData[videoId] = commentsResponse.data.items;
-//         }
-//       }
-//       setComments(commentsData);
-//     };
-//     fetchActivities();
-//   }, []);
-
-//   const handleCommentAdded = (newComment) => {
-//     const videoId = newComment.snippet.videoId;
-//     setComments((prevComments) => ({
-//       ...prevComments,
-//       [videoId]: [...(prevComments[videoId] || []), newComment],
-//     }));
-//   };
-
-//   const handleReplyAdded = (newReply) => {
-//     const parentId = newReply.snippet.parentId;
-//     const videoId = newReply.snippet.videoId;
-//     setComments((prevComments) => ({
-//       ...prevComments,
-//       [videoId]: prevComments[videoId]?.map((comment) =>
-//         comment.id === parentId
-//           ? {
-//               ...comment,
-//               replies: {
-//                 comments: [...(comment.replies?.comments || []), newReply],
-//               },
-//             }
-//           : comment
-//       ),
-//     }));
-//   };
-
-//   const handleDeleteComment = async (commentId, videoId) => {
-//     const token = localStorage.getItem("userToken");
-//     await axios.delete(`http://localhost:5000/comments/${commentId}`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     setComments((prevComments) => ({
-//       ...prevComments,
-//       [videoId]: prevComments[videoId]?.filter(
-//         (comment) => comment.id !== commentId
-//       ),
-//     }));
-//   };
-
-//   return (
-//     <div>
-//       <h1>Activities</h1>
-//       <div>
-//         <button onClick={handleLogout}>Logout</button>
-//       </div>
-//       <ul>
-//         {activities.map((activity) => (
-//           <li key={activity.id}>
-//             <h2>{activity.snippet.title}</h2>
-//             <p>Published At {fDate(activity.snippet.publishedAt)}</p>
-//             {activity.contentDetails.upload && (
-//               <>
-//                 <CommentForm
-//                   videoId={activity.contentDetails.upload.videoId}
-//                   onCommentAdded={handleCommentAdded}
-//                 />
-//                 <ul>
-//                   {comments[activity.contentDetails.upload.videoId]?.map(
-//                     (comment) => (
-//                       <li key={comment.id}>
-//                         <p>
-//                           <strong>
-//                             {
-//                               comment.snippet.topLevelComment.snippet
-//                                 .authorDisplayName
-//                             }
-//                             :
-//                           </strong>{" "}
-//                           {comment.snippet.topLevelComment.snippet.textOriginal}
-//                         </p>
-//                         <button
-//                           onClick={() =>
-//                             handleDeleteComment(
-//                               comment.id,
-//                               activity.contentDetails.upload.videoId
-//                             )
-//                           }
-//                         >
-//                           Delete
-//                         </button>
-//                         <ReplyForm
-//                           commentId={comment.id}
-//                           onReplyAdded={() =>
-//                             handleCommentAdded(
-//                               activity.contentDetails.upload.videoId
-//                             )
-//                           }
-//                         />
-//                         {comment.replies && (
-//                           <ul>
-//                             {comment.replies.comments.map((reply) => (
-//                               <li key={reply.id}>
-//                                 <p>
-//                                   <strong>
-//                                     {reply.snippet.authorDisplayName}:
-//                                   </strong>{" "}
-//                                   {reply.snippet.textOriginal}
-//                                 </p>
-//                                 <button
-//                                   onClick={() =>
-//                                     handleDeleteComment(
-//                                       reply.id,
-//                                       activity.contentDetails.upload.videoId
-//                                     )
-//                                   }
-//                                 >
-//                                   Delete
-//                                 </button>
-//                               </li>
-//                             ))}
-//                           </ul>
-//                         )}
-//                       </li>
-//                     )
-//                   )}
-//                 </ul>
-//               </>
-//             )}
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default Home;

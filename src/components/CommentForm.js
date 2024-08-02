@@ -8,7 +8,10 @@ const CommentForm = ({ videoId, onCommentAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:4000/comments", { videoId, text });
+    await axios.post("https://youtube-api-be.onrender.com/comments", {
+      videoId,
+      text,
+    });
     setText("");
     onCommentAdded();
   };
